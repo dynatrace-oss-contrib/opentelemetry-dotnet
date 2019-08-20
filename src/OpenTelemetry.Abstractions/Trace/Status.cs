@@ -19,7 +19,7 @@ namespace OpenTelemetry.Trace
     /// <summary>
     /// Span execution status.
     /// </summary>
-    public class Status
+    public struct Status
     {
         /// <summary>
         /// The operation completed successfully.
@@ -146,6 +146,7 @@ namespace OpenTelemetry.Trace
         {
             this.CanonicalCode = canonicalCode;
             this.Description = description;
+            this.IsValid = true;
         }
 
         /// <summary>
@@ -170,6 +171,12 @@ namespace OpenTelemetry.Trace
         }
 
         /// <summary>
+        /// Gets a value indicating whether this is valid to work with.
+        /// Only results initialized with a CanonicalCode (optional description) are considered valid.
+        /// </summary>
+        public bool IsValid { get; private set; }
+
+        /// <summary>
         /// Returns a new instance of a status with the description populated.
         /// </summary>
         /// <param name="description">Description of the status.</param>
@@ -187,11 +194,6 @@ namespace OpenTelemetry.Trace
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (obj == this)
-            {
-                return true;
-            }
-
             if (!(obj is Status))
             {
                 return false;
