@@ -1,4 +1,4 @@
-﻿// <copyright file="ICounterLong.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="LabelSet.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,15 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
-using OpenTelemetry.Metrics.Implementation;
-
 namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Counter metric, to report instantaneous measurement of a double value. Cumulative values can go
-    /// up or stay the same, but can never go down.Cumulative values cannot be negative.
+    /// Name value pairs of metric labels.
     /// </summary>
-    public interface ICounterLong : IMetric<ICounterLongTimeSeries>
+    public class LabelSet
     {
     }
 }

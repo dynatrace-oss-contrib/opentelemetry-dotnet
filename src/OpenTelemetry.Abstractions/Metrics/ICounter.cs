@@ -1,4 +1,4 @@
-﻿// <copyright file="IMeasure.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="ICounter.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,22 @@
 namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Measure instrument.
+    /// Counter instrument.
     /// </summary>
-    public interface IMeasure
+    public interface ICounter
     {
         /// <summary>
-        /// Records a measure.
+        /// Adds or Increments the counter.
         /// </summary>
         /// <param name="value">value by which the counter should be incremented.</param>
         /// <param name="labelset">The labelset associated with this value.</param>
-        void Record(int value, LabelSet labelset);
+        void Add(int value, LabelSet labelset);
 
         /// <summary>
         /// Gets the handle with given labelset.
         /// </summary>
         /// <param name="labelset">The labelset from which handle should be constructed.</param>
-        /// <returns>The <see cref="IMeasureHandle" /> with label.</returns>
-        IMeasureHandle GetHandle(LabelSet labelset);
+        /// <returns>The <see cref="ICounterHandle" /> with label.</returns>
+        ICounterHandle GetHandle(LabelSet labelset);
     }
 }

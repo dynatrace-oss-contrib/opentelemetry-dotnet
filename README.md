@@ -6,6 +6,21 @@ Community Channel: [![Gitter chat][main-gitter-image]][main-gitter-url]
 
 We hold regular meetings. See details at [community page](https://github.com/open-telemetry/community#net-sdk).
 
+Approvers ([@open-telemetry/dotnet-approvers](https://github.com/orgs/open-telemetry/teams/dotnet-approvers)):
+
+- [Liudmila Molkova](https://github.com/lmolkova), Microsoft
+- [Christoph Neumueller](https://github.com/discostu105), Dynatrace
+- [Bruno Garcia](https://github.com/bruno-garcia), Sentry
+
+*Find more about the approver role in [community repository](https://github.com/open-telemetry/community/blob/master/community-membership.md#approver).*
+
+Maintainers ([@open-telemetry/dotnet-maintainers](https://github.com/orgs/open-telemetry/teams/dotnet-maintainers)):
+
+- [Sergey Kanzhelev](https://github.com/SergeyKanzhelev), Microsoft
+- [Austin Parker](https://github.com/austinlparker), LightStep
+
+*Find more about the maintainer role in [community repository](https://github.com/open-telemetry/community/blob/master/community-membership.md#maintainer).*
+
 [![Build Status](https://dev.azure.com/opentelemetry/pipelines/_apis/build/status/open-telemetry.opentelemetry-dotnet-myget-update?branchName=master)](https://dev.azure.com/opentelemetry/pipelines/_build/latest?definitionId=2&branchName=master)
 
 OpenTelemetry is a toolkit for collecting application performance and behavior
@@ -97,19 +112,17 @@ parentSpan.End();
 #### Implicit parent propagation and assignment
 
 ```csharp
-var parentSpan = tracer.StartSpan("parent span");
 
-// calling WithSpan puts parentSpan into the ambient context
-// that flows in async calls.   When child is created, it
-// implicitly becomes child of current span
-using (tracer.WithSpan(parentSpan))
+// calling StartActiveSpan starts a span and puts parentSpan into the ambient context
+// that flows in async calls.   When child is created, it implicitly becomes child of current span
+using (tracer.StartActiveSpan("parent span", out _))
 {
     var childSpan = tracer.StartSpan("child span");
 
     childSpan.End();
 }
 
-// parent span is ended when WithSpan result is disposed
+// parent span is ended when StartActiveSpan result is disposed
 ```
 
 ### Span with attributes
@@ -146,14 +159,12 @@ span.End();
 Events are timed text (with optional attributes) annotations on the span. Events can be added to current span (or any running span).
 
 ```csharp
-var span = tracer.StartSpan("incoming HTTP request", SpanKind.Server);
-
-using (tracer.WithSpan(span))
+using (tracer.StartActiveSpan("incoming HTTP request", SpanKind.Server, out var span))
 {
     span.AddEvent("routes resolved");
 }
 
-// span is ended when WithSpan result is disposed
+// span is ended when StartActiveSpan result is disposed
 ```
 
 ### Context propagation out of process
@@ -203,14 +214,17 @@ void StartActivity()
 
     // extract other things from Activity and set them on span (tags to attributes)
     // ...
-
-    tracer.WithSpan(span); // we drop scope here as we cannot propagate it all the way to stop event
 }
 
 void StopActivity()
 {
     var span = tracer.CurrentSpan;
-    span.End();
+	
+	span.End();
+    if (span is IDisposable disposableSpan)
+    {
+        disposableSpan.Dispose();
+    }
 }
 ```
 

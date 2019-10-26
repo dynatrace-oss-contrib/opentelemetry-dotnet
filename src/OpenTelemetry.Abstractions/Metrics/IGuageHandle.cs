@@ -1,4 +1,4 @@
-﻿// <copyright file="ICounterLongBuilder.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="IGuageHandle.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +14,17 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenTelemetry.Metrics.Implementation
+namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// The builder for the <see cref="ICounterLong"/>.
+    /// Handle to the gauge with the defined <see cref="LabelSet"/>.
     /// </summary>
-    public interface ICounterLongBuilder : IMetricBuilder<ICounterLongTimeSeries>
+    public interface IGuageHandle
     {
+        /// <summary>
+        /// Sets the value of the guague.
+        /// </summary>
+        /// <param name="value">value to set the guage to.</param>
+        void Set(int value);
     }
 }

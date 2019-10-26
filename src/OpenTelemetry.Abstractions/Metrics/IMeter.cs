@@ -13,57 +13,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
+
 using System.Collections.Generic;
-using OpenTelemetry.Metrics.Implementation;
-using OpenTelemetry.Tags;
-using OpenTelemetry.Trace;
 
 namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Returns a builder for <see cref="ICounterDouble"/>.
+    /// Main interface to obtain metric instruments.
     /// </summary>
     public interface IMeter
     {
         /// <summary>
-        /// Gets the builder for <see cref="ICounterDouble"/>.
+        /// Creates a <see cref="ICounter"/> with given name.
         /// </summary>
-        /// <param name="name">Name of the counter.</param>
-        /// <returns>The builder for the <see cref="ICounterDouble"/>.</returns>
-        ICounterDoubleBuilder GetCounterDoubleBuilder(string name);
+        /// <param name="name">The name of the <see cref="ICounter"/>.</param>
+        /// <returns>The <see cref="ICounter"/> instance.</returns>
+        ICounter CreateCounter(string name);
 
         /// <summary>
-        /// Gets the builder for <see cref="ICounterLong"/>.
+        /// Creates a <see cref="IGuage"/> with given name.
         /// </summary>
-        /// <param name="name">Name of the counter.</param>
-        /// <returns>The builder for the <see cref="ICounterLong"/>.</returns>
-        ICounterLongBuilder GetCounterLongBuilder(string name);
+        /// <param name="name">The name of the <see cref="IGuage"/>.</param>
+        /// <returns>The <see cref="IGuage"/> instance.</returns>
+        IGuage CreateGauge(string name);
 
         /// <summary>
-        /// Gets the builder for <see cref="IGaugeDouble"/>.
-        /// </summary>
-        /// <param name="name">Name of the counter.</param>
-        /// <returns>The builder for the <see cref="IGaugeDouble"/>.</returns>
-        IGaugeDoubleBuilder GetGaugeDoubleBuilder(string name);
-
-        /// <summary>
-        /// Gets the builder for <see cref="IGaugeLong"/>.
-        /// </summary>
-        /// <param name="name">Name of the counter.</param>
-        /// <returns>The builder for the <see cref="IGaugeLong"/>.</returns>
-        IGaugeLongBuilder GetGaugeLongBuilder(string name);
-
-        /// <summary>
-        /// Gets the builder for the <see cref="IMeasure"/>.
+        /// Creates a <see cref="IMeasure"/> with given name.
         /// </summary>
         /// <param name="name">The name of the <see cref="IMeasure"/>.</param>
-        /// <returns>The <see cref="IMeasureBuilder"/> to build the <see cref="IMeasure"/>.</returns>
-        IMeasureBuilder GetMeasureBuilder(string name);
+        /// <returns>The <see cref="IMeasure"/> instance.</returns>
+        IMeasure CreateMeasure(string name);
 
-        void Record(IEnumerable<IMeasurement> measurements);
-
-        void Record(IEnumerable<IMeasurement> measurements, ITagContext tagContext);
-
-        void Record(IEnumerable<IMeasurement> measurements, ITagContext tagContext, SpanContext spanContext);
+        /// <summary>
+        /// Constructs or retrieves the <see cref="LabelSet"/> from the given label key-value pairs.
+        /// </summary>
+        /// <param name="labels">Label key value pairs.</param>
+        /// <returns>The <see cref="LabelSet"/> with given label key value pairs.</returns>
+        LabelSet GetLabelSet(IEnumerable<KeyValuePair<string, string>> labels);
     }
 }

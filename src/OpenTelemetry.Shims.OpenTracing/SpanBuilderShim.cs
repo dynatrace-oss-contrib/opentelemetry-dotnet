@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using global::OpenTracing;
+using SpanCreationOptions = OpenTelemetry.Trace.SpanCreationOptions;
 
 namespace OpenTelemetry.Shims.OpenTracing
 {
@@ -156,18 +157,28 @@ namespace OpenTelemetry.Shims.OpenTracing
         {
             Trace.ISpan span = null;
 
+            SpanCreationOptions options = null;
+            if (this.explicitStartTime != null || this.links != null)
+            {
+                options = new SpanCreationOptions
+                {
+                    StartTimestamp = this.explicitStartTime ?? default,
+                    Links = this.links,
+                };
+            }
+
             // If specified, this takes precedence.
             if (this.ignoreActiveSpan)
             {
-                span = this.tracer.StartRootSpan(this.spanName, this.spanKind, this.explicitStartTime ?? default, this.links);
+                span = this.tracer.StartRootSpan(this.spanName, this.spanKind, options);
             }
             else if (this.parentSpan != null)
             {
-                span = this.tracer.StartSpan(this.spanName, this.parentSpan, this.spanKind, this.explicitStartTime ?? default, this.links);
+                span = this.tracer.StartSpan(this.spanName, this.parentSpan, this.spanKind, options);
             }
             else if (this.parentSpanContext != null && this.parentSpanContext.IsValid)
             {
-                span = this.tracer.StartSpan(this.spanName, this.parentSpanContext, this.spanKind, this.explicitStartTime ?? default, this.links);
+                span = this.tracer.StartSpan(this.spanName, this.parentSpanContext, this.spanKind, options);
             }
             else if (this.parentSpan == null && (this.parentSpanContext == null || !this.parentSpanContext.IsValid) && (this.tracer.CurrentSpan == null || this.tracer.CurrentSpan == Trace.BlankSpan.Instance))
             {
@@ -177,14 +188,15 @@ namespace OpenTelemetry.Shims.OpenTracing
                     var currentActivity = System.Diagnostics.Activity.Current;
                     if (this.rootOperationNamesForActivityBasedAutoCollectors.Contains(currentActivity.OperationName))
                     {
-                        span = this.tracer.StartSpanFromActivity(this.spanName, currentActivity, this.spanKind, this.links);
+                        this.tracer.StartSpanFromActivity(this.spanName, currentActivity, this.spanKind, this.links);
+                        span = this.tracer.CurrentSpan;
                     }
                 }
             }
             
             if (span == null)
             {
-                span = this.tracer.StartSpan(this.spanName, this.spanKind, this.explicitStartTime ?? default, this.links);
+                span = this.tracer.StartSpan(this.spanName, null, this.spanKind, options);
             }
 
             foreach (var kvp in this.attributes)

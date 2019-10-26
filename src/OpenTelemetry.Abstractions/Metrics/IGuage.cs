@@ -1,4 +1,4 @@
-﻿// <copyright file="IMeasure.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="IGuage.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,22 @@
 namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Measure instrument.
+    /// Gauge instrument.
     /// </summary>
-    public interface IMeasure
+    public interface IGuage
     {
         /// <summary>
-        /// Records a measure.
+        /// Sets the value of the guague.
         /// </summary>
         /// <param name="value">value by which the counter should be incremented.</param>
         /// <param name="labelset">The labelset associated with this value.</param>
-        void Record(int value, LabelSet labelset);
+        void Set(int value, LabelSet labelset);
 
         /// <summary>
         /// Gets the handle with given labelset.
         /// </summary>
         /// <param name="labelset">The labelset from which handle should be constructed.</param>
-        /// <returns>The <see cref="IMeasureHandle" /> with label.</returns>
-        IMeasureHandle GetHandle(LabelSet labelset);
+        /// <returns>The <see cref="IGuageHandle" /> with label.</returns>
+        IGuageHandle GetHandle(LabelSet labelset);
     }
 }

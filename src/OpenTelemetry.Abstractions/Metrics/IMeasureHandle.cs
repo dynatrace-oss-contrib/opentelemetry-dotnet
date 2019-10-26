@@ -1,4 +1,4 @@
-﻿// <copyright file="ICounterDoubleTimeSeries.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="IMeasureHandle.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,17 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenTelemetry.Metrics.Implementation
+namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Time series type for <see cref="ICounterDouble"/>.
+    /// Handle to the measure with the defined <see cref="LabelSet"/>.
     /// </summary>
-    public interface ICounterDoubleTimeSeries
+    public interface IMeasureHandle
     {
-        void Add(double delta);
-
-        void Set(double val);
+        /// <summary>
+        /// Records a measure.
+        /// </summary>
+        /// <param name="value">value to record.</param>
+        void Record(int value);
     }
 }

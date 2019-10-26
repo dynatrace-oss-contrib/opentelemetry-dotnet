@@ -1,4 +1,4 @@
-﻿// <copyright file="IGaugeLongTimeSeries.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="ICounterHandle.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,17 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenTelemetry.Metrics.Implementation
+namespace OpenTelemetry.Metrics
 {
     /// <summary>
-    /// Time series type for <see cref="IGaugeLong"/>.
+    /// Handle to the counter with the defined <see cref="LabelSet"/>.
     /// </summary>
-    public interface IGaugeLongTimeSeries
+    public interface ICounterHandle
     {
-        void Add(long delta);
-
-        void Set(long val);
+        /// <summary>
+        /// Adds or Increments the value of the counter handle.
+        /// </summary>
+        /// <param name="value">value by which the counter handle should be incremented.</param>
+        void Add(int value);
     }
 }

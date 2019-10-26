@@ -1,4 +1,4 @@
-﻿// <copyright file="ICounterLongTimeSeries.cs" company="OpenTelemetry Authors">
+﻿// <copyright file="NoopDisposable.cs" company="OpenTelemetry Authors">
 // Copyright 2018, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
+using System;
 
-namespace OpenTelemetry.Metrics.Implementation
+namespace OpenTelemetry.Internal
 {
-    /// <summary>
-    /// Time series type for <see cref="ICounterDouble"/>.
-    /// </summary>
-    public interface ICounterLongTimeSeries
+    internal class NoopDisposable : IDisposable
     {
-        void Add(long delta);
-
-        void Set(long val);
+        internal static readonly IDisposable Instance = new NoopDisposable();
+        
+        public void Dispose()
+        {
+        }
     }
 }

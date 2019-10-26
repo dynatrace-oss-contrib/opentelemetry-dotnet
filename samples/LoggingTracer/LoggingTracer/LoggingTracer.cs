@@ -31,8 +31,9 @@ namespace LoggingTracer
         /// <summary>
         /// Initializes a new instance of the <see cref="LoggingTracer"/> class.
         /// </summary>
-        internal LoggingTracer()
+        internal LoggingTracer(string prefix)
         {
+            this.prefix = $"Tracer({prefix})";
             Logger.Log("Tracer.ctor()");
         }
 
@@ -46,72 +47,30 @@ namespace LoggingTracer
         public ITextFormat TextFormat => new LoggingTextFormat();
 
         /// <inheritdoc/>
-        public IDisposable WithSpan(ISpan span)
+        public IDisposable WithSpan(ISpan span, bool endOnDispose)
         {
-            Logger.Log($"{this.prefix}.WithSpan");
+            Logger.Log($"{this.prefix}.WithSpan {endOnDispose}");
             return new CurrentSpanUtils.LoggingScope(span);
         }
 
         /// <inheritdoc/>
-        public ISpan StartRootSpan(string operationName, SpanKind kind, DateTimeOffset startTimestamp, Func<IEnumerable<Link>> linksGetter)
+        public ISpan StartRootSpan(string operationName, SpanKind kind, SpanCreationOptions options)
         {
-            Logger.Log($"{this.prefix}.StartRootSpan({operationName}, {kind}, {startTimestamp:o}, {linksGetter})");
+            Logger.Log($"{this.prefix}.StartRootSpan({operationName}, {kind}, {options.StartTimestamp:o}, {options.LinksFactory}, {options.Links})");
             return new LoggingSpan(operationName, kind);
         }
 
         /// <inheritdoc/>
-        public ISpan StartRootSpan(string operationName, SpanKind kind, DateTimeOffset startTimestamp, IEnumerable<Link> links)
+        public ISpan StartSpan(string operationName, ISpan parent, SpanKind kind, SpanCreationOptions options)
         {
-            Logger.Log($"{this.prefix}.StartRootSpan({operationName}, {kind}, {startTimestamp:o}, {links})");
+            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind}, {options.StartTimestamp:o}, {options.LinksFactory}, {options.Links})");
             return new LoggingSpan(operationName, kind);
         }
 
         /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, SpanKind kind, DateTimeOffset startTimestamp, Func<IEnumerable<Link>> linksGetter)
+        public ISpan StartSpan(string operationName, in SpanContext parent, SpanKind kind, SpanCreationOptions options)
         {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {kind}, {startTimestamp:o}, {linksGetter})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, SpanKind kind, DateTimeOffset startTimestamp, IEnumerable<Link> links)
-        {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {kind}, {startTimestamp:o}, {links})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, ISpan parent, SpanKind kind, DateTimeOffset startTimestamp, Func<IEnumerable<Link>> linksGetter)
-        {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind} {startTimestamp:o}, {linksGetter})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, ISpan parent, SpanKind kind, DateTimeOffset startTimestamp, IEnumerable<Link> links)
-        {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind} {startTimestamp:o}, {links})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, in SpanContext parent, SpanKind kind, DateTimeOffset startTimestamp, Func<IEnumerable<Link>> linksGetter)
-        {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind}, {startTimestamp:o}, {linksGetter})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpan(string operationName, in SpanContext parent, SpanKind kind, DateTimeOffset startTimestamp, IEnumerable<Link> links)
-        {
-            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind}, {startTimestamp:o}, {links})");
-            return new LoggingSpan(operationName, kind);
-        }
-
-        /// <inheritdoc/>
-        public ISpan StartSpanFromActivity(string operationName, Activity activity, SpanKind kind, Func<IEnumerable<Link>> linksGetter)
-        {
-            Logger.Log($"{this.prefix}.StartSpanFromActivity({operationName}, {activity.OperationName}, {kind}, {linksGetter})");
+            Logger.Log($"{this.prefix}.StartSpan({operationName}, {parent.GetType().Name}, {kind}, {options.StartTimestamp:o}, {options.LinksFactory}, {options.Links})");
             return new LoggingSpan(operationName, kind);
         }
 
